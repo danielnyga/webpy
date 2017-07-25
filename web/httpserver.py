@@ -44,11 +44,14 @@ def runbasic(func, server_address=("0.0.0.0", 8080)):
     # Used under the modified BSD license:
     # http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5
 
-    import SocketServer
+    if PY2:
+        import SocketServer
+    else:
+        import socketserver as SocketServer
     import socket, errno
     import traceback
 
-    class WSGIHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+    class WSGIHandler(SimpleHTTPRequestHandler):
         def run_wsgi_app(self):
             protocol, host, path, parameters, query, fragment = \
                 urlparse.urlparse('http://dummyhost%s' % self.path)
@@ -113,7 +116,7 @@ def runbasic(func, server_address=("0.0.0.0", 8080)):
 
         def do_GET(self):
             if self.path.startswith('/static/'):
-                SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+                SimpleHTTPRequestHandler.do_GET(self)
             else:
                 self.run_wsgi_app()
 
@@ -142,7 +145,7 @@ def runbasic(func, server_address=("0.0.0.0", 8080)):
 
     class WSGIServer(SocketServer.ThreadingMixIn, HTTPServer):
         def __init__(self, func, server_address):
-            HTTPServer.HTTPServer.__init__(self, 
+            HTTPServer.__init__(self,
                                                server_address, 
                                                WSGIHandler)
             self.app = func
