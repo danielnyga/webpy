@@ -43,7 +43,7 @@ def runbasic(func, server_address=("0.0.0.0", 8080)):
     # Modified somewhat for simplicity
     # Used under the modified BSD license:
     # http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5
-
+    global server
     if PY2:
         import SocketServer
     else:
@@ -152,7 +152,8 @@ def runbasic(func, server_address=("0.0.0.0", 8080)):
             self.serverShuttingDown = 0
 
     print("http://%s:%d/" % server_address)
-    WSGIServer(func, server_address).serve_forever()
+    server = WSGIServer(func, server_address)
+    server.serve_forever()
 
 # The WSGIServer instance. 
 # Made global so that it can be stopped in embedded mode.
