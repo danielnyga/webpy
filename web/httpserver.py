@@ -107,7 +107,7 @@ def runbasic(func, server_address=("0.0.0.0", 8080)):
 
             if (not self.wsgi_sent_headers):
                 # We must write out something!
-                self.wsgi_write_data(" ")
+                self.wsgi_write_data(" ".encode('utf8'))
             return
 
         do_POST = run_wsgi_app
